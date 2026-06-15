@@ -4,14 +4,14 @@ import { FaLock } from "react-icons/fa";
 const Form: React.FC = () => {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [mobile, setMobile] = React.useState("");
+  const [phone, setphone] = React.useState("");
 
   const [loading, setLoading] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState("");
   const [success, setSuccess] = React.useState(false);
 
   const validateInput = () => {
-    if (!name.trim() || !email.trim() || !mobile.trim()) {
+    if (!name.trim() || !email.trim() || !phone.trim()) {
       return "All fields are required.";
     }
     if (name.trim().length < 3) {
@@ -20,8 +20,8 @@ const Form: React.FC = () => {
     if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       return "Please enter a valid email address.";
     }
-    if (!/^\d{10}$/.test(mobile)) {
-      return "Mobile number must be exactly 10 digits.";
+    if (!/^\d{10}$/.test(phone)) {
+      return "Phone number must be exactly 10 digits.";
     }
     return "";
   };
@@ -40,13 +40,16 @@ const Form: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/enquiry`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/enquiry`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, email, phone }),
         },
-        body: JSON.stringify({ name, email, mobile }),
-      });
+      );
 
       const data = await response.json();
 
@@ -54,7 +57,7 @@ const Form: React.FC = () => {
         setSuccess(true);
         setName("");
         setEmail("");
-        setMobile("");
+        setphone("");
       } else {
         setErrorMsg(data.message || "Something went wrong. Please try again.");
       }
@@ -68,7 +71,7 @@ const Form: React.FC = () => {
   const isFormValid =
     name.trim().length >= 3 &&
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email) &&
-    /^\d{10}$/.test(mobile);
+    /^\d{10}$/.test(phone);
 
   return (
     <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 w-full flex flex-col gap-6">
@@ -126,13 +129,13 @@ const Form: React.FC = () => {
 
         <div className="flex flex-col">
           <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 pl-1">
-            Mobile Number
+            Phone Number
           </label>
           <input
             type="tel"
-            placeholder="10-digit mobile number"
-            value={mobile}
-            onChange={(e) => setMobile(e.target.value)}
+            placeholder="10-digit phone number"
+            value={phone}
+            onChange={(e) => setphone(e.target.value)}
             disabled={loading}
             className="w-full px-4 py-3 bg-gray-50/70 border border-gray-200 rounded-2xl text-gray-800 placeholder-gray-400 outline-none text-sm font-medium focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-100 transition-all duration-200 disabled:opacity-50"
           />
